@@ -89,11 +89,38 @@
         "request": "launch",
         "program": "${workspaceFolder}/bin-release/hydra",
         "args": ["--gpu",
-                 "-in", "../HydraScenes/multilayer_experiments/mitsuba_knob_4.xml",
+                 "-in", "../HydraScenes/multilayer_experiments/mitsuba_knob_0.xml",
                  "-integrator", "mispt", 
                  "-width", "1000",
                  "-height", "1000",
-                 "-spp", "500", 
+                 "-spp", "2500", 
+                 "-out", "../out/pic.bmp",
+                 "--spectral"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+
+    {
+        "name": "BMW",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin-release/hydra",
+        "args": ["--gpu",
+                 "-in", "../HydraScenes/bmw/films.xml",
+                 "-integrator", "mispt", 
+                 "-width", "2048",
+                 "-height", "2048",
+                 "-spp", "1500", 
                  "-out", "../out/pic.bmp",
                  "--spectral"],
         "stopAtEntry": false,
