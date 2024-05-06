@@ -1061,9 +1061,9 @@ Material LoadThinFilmMaterial(const pugi::xml_node& materialNode, const std::vec
 
     const auto& [sampler, texID] = LoadTextureFromNode(nodeThickness, texturesInfo, texCache, textures);
     
-    mat.row0 [0] = sampler.row0;
-    mat.row1 [0] = sampler.row1;
-    mat.texid[0] = texID;
+    mat.row0 [2] = sampler.row0;
+    mat.row1 [2] = sampler.row1;
+    mat.texid[2] = texID;
   }
   else
   {

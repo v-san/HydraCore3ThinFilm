@@ -216,12 +216,16 @@ BsdfSample Integrator::MaterialSampleAndEval(uint a_materialId, uint tid, uint b
         SampleFilmsSpectrum(currMatId, wavelengths, FILM_K_OFFSET, FILM_K_SPECID_OFFSET, 0)[0]
       );
 
+      const uint texId2  = m_materials[currMatId].texid[2];
+      const float2 texCoord2T = mulRows2x4(m_materials[currMatId].row0[2], m_materials[currMatId].row1[2], tc);
+      const float4 color2 = m_textures[texId2]->sample(texCoord2T);
+    
       float thickness;
       if (as_uint(m_materials[currMatId].data[FILM_THICKNESS_MAP]) > 0u)
       {
         float thickness_max = m_materials[currMatId].data[FILM_THICKNESS_MAX];
         float thickness_min = m_materials[currMatId].data[FILM_THICKNESS_MIN];
-        thickness = (thickness_max - thickness_min) * texColor.x + thickness_min;
+        thickness = (thickness_max - thickness_min) * color2.x + thickness_min;
       }
       else
       {
@@ -439,12 +443,15 @@ BsdfEval Integrator::MaterialEval(uint a_materialId, float4 wavelengths, float3 
             SampleFilmsSpectrum(currMat.id, wavelengths, FILM_K_OFFSET, FILM_K_SPECID_OFFSET, 0)[0]
           );
 
+          const uint texId2  = m_materials[currMat.id].texid[2];
+          const float2 texCoord2T = mulRows2x4(m_materials[currMat.id].row0[2], m_materials[currMat.id].row1[2], tc);
+          const float4 color2 = m_textures[texId2]->sample(texCoord2T);
           float thickness;
           if (as_uint(m_materials[currMat.id].data[FILM_THICKNESS_MAP]) > 0u)
           {
             float thickness_max = m_materials[currMat.id].data[FILM_THICKNESS_MAX];
             float thickness_min = m_materials[currMat.id].data[FILM_THICKNESS_MIN];
-            thickness = (thickness_max - thickness_min) * texColor.x + thickness_min;
+            thickness = (thickness_max - thickness_min) * color2.x + thickness_min;
           }
           else
           {
