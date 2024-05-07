@@ -6,29 +6,36 @@
 struct CMatrix2x2
 {
   complex c00, c01, c10, c11;
-  CMatrix2x2() {}
-  CMatrix2x2(complex a, complex b, complex c, complex d) : c00(a), c01(b), c10(c), c11(d) {}
 };
 
 static inline CMatrix2x2 multCMatrix2x2(const CMatrix2x2 m1, const CMatrix2x2 m2)
 {
   CMatrix2x2 result;
-  result.c00 = m1.c00 * m2.c00 + m1.c01 * m2.c10;
-  result.c01 = m1.c00 * m2.c01 + m1.c01 * m2.c11;
-  result.c10 = m1.c10 * m2.c00 + m1.c11 * m2.c10;
-  result.c11 = m1.c10 * m2.c01 + m1.c11 * m2.c11;
+  result.c00 = complex(m1.c00.re, m1.c00.im) * complex(m2.c00.re, m2.c00.im) + complex(m1.c01.re, m1.c01.im) * complex(m2.c10.re, m2.c10.im);
+  result.c01 = complex(m1.c00.re, m1.c00.im) * complex(m2.c01.re, m2.c01.im) + complex(m1.c01.re, m1.c01.im) * complex(m2.c11.re, m2.c11.im);
+  result.c10 = complex(m1.c10.re, m1.c10.im) * complex(m2.c00.re, m2.c00.im) + complex(m1.c11.re, m1.c11.im) * complex(m2.c10.re, m2.c10.im);
+  result.c11 = complex(m1.c10.re, m1.c10.im) * complex(m2.c01.re, m2.c01.im) + complex(m1.c11.re, m1.c11.im) * complex(m2.c11.re, m2.c11.im);
   return result;
 }
 
 static inline CMatrix2x2 getPropMatrix(complex phaseExp)
 {
+  CMatrix2x2 res;
   if (complex_norm(phaseExp) > 1.f)
   {
-    return {(1.f / (phaseExp * phaseExp)), 0.0f, 0.0f, 1.f};
+    res.c00 = (1.f / (phaseExp * phaseExp));
+    res.c01 = 0.0f;
+    res.c10 = 0.0f;
+    res.c11 = 1.0f;
+    return res;
   }
   else
   {
-    return {1.f, 0.0f, 0.0f, phaseExp * phaseExp};
+    res.c00 = 1.f;
+    res.c01 = 0.0f;
+    res.c10 = 0.0f;
+    res.c11 = phaseExp * phaseExp;
+    return res;
   }
 }
 
@@ -55,14 +62,22 @@ static inline FrReflRefr TransferMatrixForward(complex cosThetaI, const complex*
   complex FrRefl = FrComplexRefl(cosThetaI, cosThetaF, a_ior[0], a_ior[1], PolarizationP);
   complex FrRefr = FrComplexRefr(cosThetaI, cosThetaF, a_ior[0], a_ior[1], PolarizationP);
 
-  CMatrix2x2 D_P = {1.f, FrRefl, FrRefl, 1.f};
+  CMatrix2x2 D_P;
+  D_P.c00 = 1.f;
+  D_P.c01 = FrRefl;
+  D_P.c10 = FrRefl;
+  D_P.c11 = 1.f;
   complex coeff_P = FrRefr;
 
   // S polarization
   FrRefl = FrComplexRefl(cosThetaI, cosThetaF, a_ior[0], a_ior[1], PolarizationS);
   FrRefr = FrComplexRefr(cosThetaI, cosThetaF, a_ior[0], a_ior[1], PolarizationS);
 
-  CMatrix2x2 D_S = {1.f, FrRefl, FrRefl, 1.f};
+  CMatrix2x2 D_S;
+  D_S.c00 = 1.f;
+  D_S.c01 = FrRefl;
+  D_S.c10 = FrRefl;
+  D_S.c11 = 1.f;
   complex coeff_S = FrRefr;
 
   complex phaseDiff = filmPhaseDiff(cosThetaF, a_ior[1], thickness[0], lambda) / 2.f;
@@ -133,14 +148,22 @@ static inline FrReflRefr TransferMatrixBackward(complex cosThetaI, const complex
   complex FrRefl = FrComplexRefl(cosThetaI, cosThetaF, a_ior[layers], a_ior[layers - 1], PolarizationP);
   complex FrRefr = FrComplexRefr(cosThetaI, cosThetaF, a_ior[layers], a_ior[layers - 1], PolarizationP);
 
-  CMatrix2x2 D_P = {1.f, FrRefl, FrRefl, 1.f};
+  CMatrix2x2 D_P;
+  D_P.c00 = 1.f;
+  D_P.c01 = FrRefl;
+  D_P.c10 = FrRefl;
+  D_P.c11 = 1.f;
   complex coeff_P = FrRefr;
 
   // S polarization
   FrRefl = FrComplexRefl(cosThetaI, cosThetaF, a_ior[layers], a_ior[layers - 1], PolarizationS);
   FrRefr = FrComplexRefr(cosThetaI, cosThetaF, a_ior[layers], a_ior[layers - 1], PolarizationS);
 
-  CMatrix2x2 D_S = {1.f, FrRefl, FrRefl, 1.f};
+  CMatrix2x2 D_S;
+  D_S.c00 = 1.f;
+  D_S.c01 = FrRefl;
+  D_S.c10 = FrRefl;
+  D_S.c11 = 1.f;
   complex coeff_S = FrRefr;
 
   complex phaseDiff = filmPhaseDiff(cosThetaF, a_ior[layers - 1], thickness[layers - 2], lambda) / 2.f;
