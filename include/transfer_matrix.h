@@ -5,24 +5,26 @@
 
 struct CMatrix2x2
 {
-    complex c00, c01, c10, c11;
+  complex c00, c01, c10, c11;
+  CMatrix2x2() {}
+  CMatrix2x2(complex a, complex b, complex c, complex d) : c00(a), c01(b), c10(c), c11(d) {}
 };
 
 static inline CMatrix2x2 multCMatrix2x2(const CMatrix2x2 m1, const CMatrix2x2 m2)
 {
-    CMatrix2x2 result;
-    result.c00 = m1.c00 * m2.c00 + m1.c01 * m2.c10;
-    result.c01 = m1.c00 * m2.c01 + m1.c01 * m2.c11;
-    result.c10 = m1.c10 * m2.c00 + m1.c11 * m2.c10;
-    result.c11 = m1.c10 * m2.c01 + m1.c11 * m2.c11;
-    return result;
+  CMatrix2x2 result;
+  result.c00 = m1.c00 * m2.c00 + m1.c01 * m2.c10;
+  result.c01 = m1.c00 * m2.c01 + m1.c01 * m2.c11;
+  result.c10 = m1.c10 * m2.c00 + m1.c11 * m2.c10;
+  result.c11 = m1.c10 * m2.c01 + m1.c11 * m2.c11;
+  return result;
 }
 
 static inline CMatrix2x2 getPropMatrix(complex phaseExp)
 {
   if (complex_norm(phaseExp) > 1.f)
   {
-    return {1.f / (phaseExp * phaseExp), 0.0f, 0.0f, 1.f};
+    return {(1.f / (phaseExp * phaseExp)), 0.0f, 0.0f, 1.f};
   }
   else
   {
